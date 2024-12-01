@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import captionsController from '../controller/captions.controller.js';
 import { body } from 'express-validator';
+import captainAuth from '../middleware/captain.auth.js';
+import captainBlackList from '../middleware/captain.blackList.js';
+
 const router = Router();
 
 
@@ -11,8 +14,8 @@ router.post('/register',
     body('password').isLength({ min: 8 }).withMessage("the length of your password must be at least 8 characters"),
     captionsController.register);
 
-
-
-
+router.post('/login', captionsController.login);
+router.get('/profile', captainAuth, captionsController.profile);
+router.get('/logout', captainBlackList, captionsController.logout);
 
 export default router;

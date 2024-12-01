@@ -31,7 +31,7 @@ const userRegister = async (req, res) => {
     Object.freeze(userData);
     const userInsertData = usersModel(userData);
     await userInsertData.save();
-
+    delete userInsertData._doc.password;
     const token = await userInsertData.genrateAuthToken(userInsertData._id);
     if (!token) {
         return res.status(502).json({ success: false, message: "try again , something is wrong", status: "No" });
@@ -44,7 +44,6 @@ const userRegister = async (req, res) => {
 const userLogin = async (req, res) => {
     const userData = req.body;
     const { email, password } = userData;
-
     if (!email || !password) {
         return res.status(403).json({ success: false, message: "field are empty", status: "No" });
     }
@@ -55,15 +54,15 @@ const userLogin = async (req, res) => {
     }
 
     const userFindData = await usersModel.findOne({ email: email }).select("+password");
-
-    const securityForServer = {};
-    securityForServer.email = userFindData.email;
-    securityForServer.fullname = userFindData.fullname;
     if (!userFindData) {
         return res.status(403).json({ success: false, message: "Invalid user", status: "No" });
     }
 
-    const checkPassword = userFindData.comparePasswords(password, userFindData.password);
+    const securityForServer = {};
+    securityForServer.email = userFindData.email;
+    securityForServer.fullname = userFindData.fullname;
+
+    const checkPassword = await userFindData.comparePasswords(password, userFindData.password);
     if (!checkPassword) {
         return res.status(403).json({ success: false, message: "Invalid user", status: "No" });
     }
