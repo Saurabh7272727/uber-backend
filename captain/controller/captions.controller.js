@@ -2,6 +2,8 @@ const captionsController = {};
 import { validationResult } from 'express-validator';
 import captainModel from '../models/captions.model.js';
 import blackListModel from '../models/blackList.js';
+import { subscribeToQueue } from '../service/rabbit.js';
+
 
 const captionRegister = async (req, res) => {
     const errors = validationResult(req);
@@ -71,6 +73,27 @@ const logout = async (req, res) => {
     return res.status(200).json({ success: true, message: req.message, status: "yes" });
 }
 
+const pendingRequests = [];
+const waitForNewRide = async (req, res) => {
+    req.setTimeout(10000, () => {
+        res.status(204).json({ sucess: false, message: "No ride are available", status: "No" });
+    });
+    pendingRequests.push(res);
+};
+
+subscribeToQueue('new-ride', (data) => {
+    const rideData = JSON.parse(data);
+
+    pendingRequests.forEach(res => {
+        res.json(rideData);
+    });
+    pendingRequests.length = 0;
+})
+
+subscribeToQueue('ride-accepted', (data) => {
+    console.log(JSON.parse(data));
+})
+
 
 
 
@@ -78,4 +101,5 @@ captionsController.register = captionRegister;
 captionsController.login = login;
 captionsController.profile = profile;
 captionsController.logout = logout;
+captionsController.newRide = waitForNewRide;
 export default captionsController;

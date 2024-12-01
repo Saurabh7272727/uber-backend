@@ -17,5 +17,5 @@ router.post('/register',
 router.post('/login', captionsController.login);
 router.get('/profile', captainAuth, captionsController.profile);
 router.get('/logout', captainBlackList, captionsController.logout);
-
+router.get('/new-ride', captainAuth, captionsController.newRide);
 export default router;

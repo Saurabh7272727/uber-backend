@@ -1,10 +1,33 @@
-
-
+import { publishToQueue } from '../service/rabbit.js';
+import rideModel from '../models/ride.model.js';
 
 
 const createRide = async (req, res) => {
-    return res.status(200).json({ success: true, message: "create", status: "Yes", data: req.result });
+
+    const { pickup, destination } = req.body;
+    const newRide = new rideModel({
+        user: req.user,
+        pickup,
+        destination
+    })
+
+    await newRide.save();
+    publishToQueue("new-ride", JSON.stringify(newRide));
+    res.send(newRide);
+}
+
+const acceptRide = async (req, res) => {
+    const { rideId } = req.query;
+    const ride = await rideModel.findById({ _id: rideId });
+    if (!ride) {
+        return res.status(404).json({ message: 'Ride not found' });
+    }
+    ride.captain = req.captain;
+    ride.status = 'accepted';
+    await ride.save();
+    publishToQueue("ride-accepted", JSON.stringify(ride))
+    res.send(ride);
 }
 
 
-export { createRide };
+export { createRide, acceptRide };
