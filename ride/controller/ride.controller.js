@@ -3,14 +3,18 @@ import rideModel from '../models/ride.model.js';
 
 
 const createRide = async (req, res) => {
-
     const { pickup, destination } = req.body;
+    const pastRideOfUser = await rideModel.findOne({ user: req.user.data.email });
+    if (pastRideOfUser?.status === 'accepted') {
+        return res.json({ success: false, message: "your previous ride was accepted", status: 'No' });
+    }
+    await rideModel.deleteOne({ user: req.user.data.email });
     const newRide = new rideModel({
-        user: req.user,
+        user: req.user.data.email,
         pickup,
-        destination
+        destination,
+        token: req.user.token
     })
-
     await newRide.save();
     publishToQueue("new-ride", JSON.stringify(newRide));
     res.send(newRide);

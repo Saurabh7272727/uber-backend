@@ -17,7 +17,8 @@ const logoutAuthantication = async (req, res, next) => {
         if (!findUserData) {
             return res.status(403).json({ success: false, message: "Unauthorized", status: "No" });
         }
-
+        findUserData.active = !findUserData.active;
+        await findUserData.save();
         const blackListOBJ = {
             black_list_token: token,
             email: findUserData.email,

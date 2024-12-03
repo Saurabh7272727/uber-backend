@@ -5,10 +5,10 @@ import captainModel from '../models/captions.model.js';
 import jwt from 'jsonwebtoken';
 
 const captainBlackList = async (req, res, next) => {
-    const token = req.cookies.token || req.headers.authorization.split(' ')[1];
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ success: false, message: "UnAuthorized access", status: "No" });
+        return res.status(401).json({ success: false, message: "UnAuthorized access token", status: "No" });
     }
 
     try {
@@ -25,7 +25,7 @@ const captainBlackList = async (req, res, next) => {
         });
 
     } catch (error) {
-        return res.status(401).json({ success: false, message: "UnAuthorized access", status: "No" });
+        return res.status(401).json({ success: false, message: "UnAuthorized access catch error", status: "No" });
     }
 }
 

@@ -22,6 +22,9 @@ const rideSchema = new mongoose.Schema({
         enum: ['requested', 'accepted', 'started', 'completed'],
         default: 'requested'
     },
+    token: {
+        type: String,
+    }
 }, {
     timestamps: true
 })

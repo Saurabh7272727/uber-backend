@@ -17,7 +17,7 @@ const Authorization = async (req, res, next) => {
                 Authorization: `Bearer ${token}`
             },
         })
-        req.user = response.data.data._id;
+        req.user = response.data;
         next();
     } catch (error) {
         console.log(error.message);

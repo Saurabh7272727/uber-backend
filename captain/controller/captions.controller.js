@@ -75,7 +75,7 @@ const logout = async (req, res) => {
 
 const pendingRequests = [];
 const waitForNewRide = async (req, res) => {
-    req.setTimeout(10000, () => {
+    req.setTimeout(30000, () => {
         res.status(204).json({ sucess: false, message: "No ride are available", status: "No" });
     });
     pendingRequests.push(res);
@@ -90,8 +90,9 @@ subscribeToQueue('new-ride', (data) => {
     pendingRequests.length = 0;
 })
 
-subscribeToQueue('ride-accepted', (data) => {
-    console.log(JSON.parse(data));
+subscribeToQueue('ride-accepted', (datas) => {
+    const data = JSON.parse(datas);
+    console.log('New request are accepted');
 })
 
 

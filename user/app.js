@@ -8,9 +8,10 @@ import userRouter from './routes/users.route.js';
 import dataBaseConnect from './db/db.js';
 import morgan from 'morgan';
 import { connectToRabbitMQ } from './service/rabbit.js';
+import { credentials } from 'amqplib';
 
 const app = express();
-app.use(cors({ methods: ['GET', 'POST'] }))
+app.use(cors({ origin: '*', methods: ['GET', 'POST'], credentials: true }))
 app.use(express.json());
 dataBaseConnect();
 app.use(express.urlencoded({ extended: true }));

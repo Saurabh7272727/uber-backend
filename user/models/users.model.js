@@ -23,6 +23,11 @@ const userModel = new Schema({
         type: String,
         required: true,
         unique: true
+    },
+    active: {
+        type: Boolean,
+        enum: ['true', 'false'],
+        default: false
     }
 })
 

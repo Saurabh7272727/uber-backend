@@ -21,6 +21,7 @@ const userAuthMain = async (req, res, next) => {
         const { _id } = decoded;
         const userFindByJWT = await usersModel.findById({ _id: _id });
         req.user = userFindByJWT;
+        req.token = token;
         return next();
     } catch (error) {
         return res.status(403).json({ success: false, message: "something are wrong , sorry", status: "No" });

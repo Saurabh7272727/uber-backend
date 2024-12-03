@@ -57,7 +57,8 @@ const userLogin = async (req, res) => {
     if (!userFindData) {
         return res.status(403).json({ success: false, message: "Invalid user", status: "No" });
     }
-
+    userFindData.active = !userFindData.active;
+    await userFindData.save();
     const securityForServer = {};
     securityForServer.email = userFindData.email;
     securityForServer.fullname = userFindData.fullname;
@@ -75,7 +76,7 @@ const userLogin = async (req, res) => {
 }
 
 const userProfile = async (req, res) => {
-    return res.status(200).json({ success: true, message: "profile", data: req.user });
+    return res.status(200).json({ success: true, message: "profile", token: req.token, data: req.user });
 }
 
 

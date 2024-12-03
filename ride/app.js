@@ -8,7 +8,7 @@ import { connectToRabbitMQ } from './service/rabbit.js';
 import connectDatabase from './db/db.js';
 const app = express();
 
-app.use(cors({ methods: ['GET', 'HEAD', 'POST'] }));
+app.use(cors({ origin: "*", methods: ['GET', 'HEAD', 'POST'], credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
